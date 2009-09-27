@@ -24,20 +24,21 @@ class sinatra_Base implements haxe_Public{
 	static $request;
 	static function run($app) {
 		sinatra_Base::$request = new sinatra_Request();
-		haxe_Log::trace(sinatra_Base::$request, _hx_anonymous(array("fileName" => "Base.hx", "lineNumber" => 57, "className" => "sinatra.Base", "methodName" => "run")));
+		haxe_Log::trace(sinatra_Base::$request, _hx_anonymous(array("fileName" => "Base.hx", "lineNumber" => 56, "className" => "sinatra.Base", "methodName" => "run")));
 		$route = null;
-		$routes = sinatra_Base::$_routes->get(sinatra_Base::$request->method);
-		$»it = $routes->iterator();
+		$»it = sinatra_Base::$_routes->get(sinatra_Base::$request->method)->iterator();
 		while($»it->hasNext()) {
 		$r = $»it->next();
 		{
-			haxe_Log::trace($r, _hx_anonymous(array("fileName" => "Base.hx", "lineNumber" => 63, "className" => "sinatra.Base", "methodName" => "run")));
 			if(sinatra_Route::match($r->route, sinatra_Base::$request->path)) {
 				$route = $r;
 				break;
 			}
 			;
 		}
+		}
+		if($route === null) {
+			throw new HException("Found no route matching \"" . sinatra_Base::$request->path . "\"");
 		}
 		$view = null;
 		try {

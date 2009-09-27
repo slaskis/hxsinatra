@@ -91,19 +91,15 @@ class sinatra_utils_URI {
 	static $PATTERN_REL_URI = "\x0A\x09        (?:\x0A\x09          (?:\x0A\x09            //\x0A\x09            (?:\x0A\x09              (?:((?:[-_.!~*'()a-zA-Z\\d;:&=+\$,]|%[a-fA-F\\d]{2})*)@)?\x0A\x09                ((?:(?:(?:[a-zA-Z\\d](?:[-a-zA-Z\\d]*[a-zA-Z\\d])?)\\.)*(?:[a-zA-Z](?:[-a-zA-Z\\d]*[a-zA-Z\\d])?)\\.?|\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|\\[(?:(?:[a-fA-F\\d]{1,4}:)*(?:[a-fA-F\\d]{1,4}|\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(?:(?:[a-fA-F\\d]{1,4}:)*[a-fA-F\\d]{1,4})?::(?:(?:[a-fA-F\\d]{1,4}:)*(?:[a-fA-F\\d]{1,4}|\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}))?)\\]))?(?::(\\d*))?\x0A\x09            |\x0A\x09              ((?:[-_.!~*'()a-zA-Z\\d\$,;:@&=+]|%[a-fA-F\\d]{2})+)\x0A\x09            )\x0A\x09          )\x0A\x09        |\x0A\x09          ((?:[-_.!~*'()a-zA-Z\\d;@&=+\$,]|%[a-fA-F\\d]{2})+)\x0A\x09        )?\x0A\x09        (/(?:[-_.!~*'()a-zA-Z\\d:@&=+\$,]|%[a-fA-F\\d]{2})*(?:;(?:[-_.!~*'()a-zA-Z\\d:@&=+\$,]|%[a-fA-F\\d]{2})*)*(?:/(?:[-_.!~*'()a-zA-Z\\d:@&=+\$,]|%[a-fA-F\\d]{2})*(?:;(?:[-_.!~*'()a-zA-Z\\d:@&=+\$,]|%[a-fA-F\\d]{2})*)*)*)?\x0A\x09        (?:\\?((?:[-_.!~*'()a-zA-Z\\d;/?:@&=+\$,\\[\\]]|%[a-fA-F\\d]{2})*))?\x0A\x09        (?:\\#((?:[-_.!~*'()a-zA-Z\\d;/?:@&=+\$,\\[\\]]|%[a-fA-F\\d]{2})*))?\x0A\x09      ";
 	static $PATTERN_REMOVE_WHITESPACE;
 	static function parse($str) {
-		haxe_Log::trace("Parsing URI from: " . $str, _hx_anonymous(array("fileName" => "URI.hx", "lineNumber" => 130, "className" => "sinatra.utils.URI", "methodName" => "parse")));
-		$abs = new EReg(sinatra_utils_URI::$PATTERN_REMOVE_WHITESPACE->replace(sinatra_utils_URI::$PATTERN_ABS_URI, ""), "");
+		$abs = new EReg("^" . sinatra_utils_URI::$PATTERN_REMOVE_WHITESPACE->replace(sinatra_utils_URI::$PATTERN_ABS_URI, "") . "\$", "");
 		if($abs->match($str)) {
-			haxe_Log::trace("IT'S AN ABSOLUTE URI!", _hx_anonymous(array("fileName" => "URI.hx", "lineNumber" => 134, "className" => "sinatra.utils.URI", "methodName" => "parse")));
 			return new sinatra_utils_URI($abs, true);
 		}
-		$rel = new EReg(sinatra_utils_URI::$PATTERN_REMOVE_WHITESPACE->replace(sinatra_utils_URI::$PATTERN_REL_URI, ""), "");
+		$rel = new EReg("^" . sinatra_utils_URI::$PATTERN_REMOVE_WHITESPACE->replace(sinatra_utils_URI::$PATTERN_REL_URI, "") . "\$", "");
 		if($rel->match($str)) {
-			haxe_Log::trace("IT'S A RELATIVE URI!", _hx_anonymous(array("fileName" => "URI.hx", "lineNumber" => 140, "className" => "sinatra.utils.URI", "methodName" => "parse")));
 			return new sinatra_utils_URI($rel, false);
 		}
-		haxe_Log::trace("Invalid URI", _hx_anonymous(array("fileName" => "URI.hx", "lineNumber" => 144, "className" => "sinatra.utils.URI", "methodName" => "parse")));
-		return null;
+		throw new HException("Invalid URI");
 	}
 	function __toString() { return $this->toString(); }
 }

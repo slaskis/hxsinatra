@@ -127,22 +127,15 @@ class URI {
 	static var PATTERN_REMOVE_WHITESPACE = ~/\s*|\n/g;
 	
 	public static function parse( str ) {
-		trace( "Parsing URI from: " + str );
-		
-		var abs = new EReg( PATTERN_REMOVE_WHITESPACE.replace( PATTERN_ABS_URI , "" ) , "" );
-		if( abs.match( str ) ) {
-			trace( "IT'S AN ABSOLUTE URI!" );
+		var abs = new EReg( "^" + PATTERN_REMOVE_WHITESPACE.replace( PATTERN_ABS_URI , "" ) + "$" , "" );
+		if( abs.match( str ) )
 			return new URI( abs , true );
-		} 
 		
-		var rel = new EReg( PATTERN_REMOVE_WHITESPACE.replace( PATTERN_REL_URI , "" ) , "" );
-		if( rel.match( str ) ) {
-			trace( "IT'S A RELATIVE URI!" );
+		var rel = new EReg( "^" + PATTERN_REMOVE_WHITESPACE.replace( PATTERN_REL_URI , "" ) + "$" , "" );
+		if( rel.match( str ) )
 			return new URI( rel , false );
-		}
-		
-		trace( "Invalid URI" );
-		return null;
+			
+		throw "Invalid URI";
 	}
 	
 	public function toString() {

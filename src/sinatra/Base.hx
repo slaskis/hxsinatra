@@ -6,6 +6,7 @@ import sinatra.utils.EnumHash;
 class Base implements haxe.Public {
 	
 	private static var _routes : EnumHash<HTTPMethod,List<Route>>;
+	static var request : Request;
 	
 	static function __init__() {
 		_routes = new EnumHash<HTTPMethod,List<Route>>();
@@ -49,8 +50,6 @@ class Base implements haxe.Public {
 	 */
 	function delete( route , scope , func ) _routes.get( HTTPMethod.DELETE ).add( Route.delete( route , scope , func ) )
 	
-	static var request : Request;
-
 	public static function run( app : sinatra.Base ) {
 		// Initializes a Request (which sets up sessions, cookies, post/get params)
 		request = new Request();
@@ -58,14 +57,15 @@ class Base implements haxe.Public {
 		
 		// Goes through the _routes hash to see which one matches the request
 		var route : Route = null;
-		var routes = _routes.get( request.method );
-		for( r in routes ) {
-			trace( r );
+		for( r in _routes.get( request.method ) ) {
 			if( Route.match( r.route , request.path ) ) {
 				route = r;
 				break;
 			}
 		}
+		
+		if( route == null ) 
+			throw "Found no route matching \""+ request.path + "\"";
 		
 		// Calls the route method
 		// Wrap the call in try/catch to see if there's any 404 or other return codes or errors.

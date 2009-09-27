@@ -54,20 +54,13 @@ class sinatra_Route {
 		return new sinatra_Route(sinatra_HTTPMethod::$DELETE, $route, $scope, $func);
 	}
 	static function match($route, $path) {
-		$pattern = (Std::is($route, _hx_qtype("EReg")) ? eval("if(isset(\$this)) \$퍁his =& \$this;\$tmp = \$route;
-			\$팿 = (Std::is(\$tmp, _hx_qtype(\"EReg\")) ? \$tmp : eval(\"if(isset(\\\$this)) \\\$퍁his =& \\\$this;throw new HException(\\\"Class cast error\\\");
-				return \\\$팿2;
-			\"));
-			return \$팿;
-		") : sinatra_Route::parse($route));
-		$matched = $pattern->match($path);
+		$parser = new sinatra_RouteParser($route);
+		$matched = $parser->match($path);
+		haxe_Log::trace("Matched? " . $matched . " " . $route . " " . $path, _hx_anonymous(array("fileName" => "Route.hx", "lineNumber" => 70, "className" => "sinatra.Route", "methodName" => "match")));
 		if($matched) {
 			;
 		}
 		return $matched;
-	}
-	static function parse($str) {
-		return new EReg($str, "i");
 	}
 	function __toString() { return $this->toString(); }
 }
