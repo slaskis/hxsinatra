@@ -1,0 +1,8 @@
+-cp src
+-main Application
+-neko deploy/test.n
+
+--next
+-cp src
+-main Application
+-php deploy/test
